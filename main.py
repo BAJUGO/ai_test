@@ -98,4 +98,10 @@ plt.title(f"NN suggest the number is: {output.argmax()}")
 plt.show()
 
 
+# Для сохранения нужно запомнить только веса по факту. Нейросеть = архитектура + веса
+# np.savez("1_epoch.npz",
+#          w1=weights_inp_to_hid,
+#          w2=weights_hid_to_out,
+#          b1=bias_inp_to_hid,
+#          b2=bias_hid_to_out)
 
