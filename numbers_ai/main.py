@@ -15,7 +15,7 @@ bias_inp_to_hid = np.zeros((20, 1))
 bias_hid_to_out = np.zeros((10, 1))
 
 
-epochs = 1
+epochs = 20
 error = 0
 correct = 0
 learning_rate = 0.01
@@ -23,7 +23,7 @@ learning_rate = 0.01
 
 
 for epoch in range(epochs):
-    print(f"Epoch number {epoch}")
+    print(f"Epoch number {epoch + 1}")
     for image, answer_label in zip(images, answer_labels):
         #До этого image был просто вектором из 784 чисел.
         # 1 столбец, и столько строк, чтобы подошло по размеру так сказать
@@ -43,12 +43,12 @@ for epoch in range(epochs):
 
         #Backpropagation
         delta_output = output - answer_label
-        weights_hid_to_out += -learning_rate * delta_output @ np.transpose(hidden)
-        bias_hid_to_out += -learning_rate * delta_output
+        weights_hid_to_out += -(learning_rate * delta_output @ np.transpose(hidden))
+        bias_hid_to_out += - (learning_rate * delta_output)
 
-        delta_hidden = np.transpose(weights_hid_to_out) @ delta_output * (hidden * (1 - hidden))
-        weights_inp_to_hid += -learning_rate * delta_hidden @ np.transpose(image)
-        bias_inp_to_hid += -learning_rate * delta_hidden
+        delta_hidden = np.transpose(weights_hid_to_out) @ delta_output * (1 - hidden) * hidden
+        weights_inp_to_hid += - (learning_rate * delta_hidden @ np.transpose(image))
+        bias_inp_to_hid += - (learning_rate * delta_hidden)
 
 
 
@@ -98,8 +98,8 @@ plt.title(f"NN suggest the number is: {output.argmax()}")
 plt.show()
 
 
-# Для сохранения нужно запомнить только веса по факту. Нейросеть = архитектура + веса
-# np.savez("1_epoch.npz",
+#Для сохранения нужно запомнить только веса по факту. Нейросеть = архитектура + веса
+# np.savez("20_epoch.npz",
 #          w1=weights_inp_to_hid,
 #          w2=weights_hid_to_out,
 #          b1=bias_inp_to_hid,
