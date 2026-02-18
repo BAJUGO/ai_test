@@ -15,7 +15,7 @@ bias_inp_to_hid = np.zeros((20, 1))
 bias_hid_to_out = np.zeros((10, 1))
 
 
-epochs = 10
+epochs = 1
 error = 0
 correct = 0
 learning_rate = 0.01
@@ -59,12 +59,13 @@ for epoch in range(epochs):
     print("")
 
 
-# RANDOM check
+
+#! Здесь изначально белые цифры на чёрном фоне
+
 
 # import random
 #
 # test_image = random.choice(images)
-#
 # image = np.reshape(test_image, (-1, 1))
 #
 # hidden_raw = bias_inp_to_hid + weights_inp_to_hid @ image
@@ -78,19 +79,10 @@ for epoch in range(epochs):
 # plt.show()
 
 
-new_test_image = plt.imread("2.png")
-
-
-if new_test_image.ndim == 3:
-    new_test_image = new_test_image[..., 0]
-
-
-new_test_image = 1 - new_test_image.astype("float32") / 255
-
-
-
-
-
+# В ошибках я писал 1 - np.reshape..., но это ошибка!
+# 1 - означает полностью перевернуть цвета!!!
+new_test_image = plt.imread("number.jpg", format="jpeg")
+new_test_image = new_test_image.astype("float32") / 255
 
 image = np.reshape(new_test_image, (-1, 1))
 
@@ -100,7 +92,8 @@ hidden = funcs.sigmoid(hidden_raw)
 output_raw = bias_hid_to_out + weights_hid_to_out @ hidden
 output = funcs.sigmoid(output_raw)
 
-plt.imshow(new_test_image.reshape(28,28), cmap="Greys")
+# cmap gray - оригинальное, Grays - перевёрнотое
+plt.imshow(new_test_image.reshape(28,28), cmap="Grays")
 plt.title(f"NN suggest the number is: {output.argmax()}")
 plt.show()
 
