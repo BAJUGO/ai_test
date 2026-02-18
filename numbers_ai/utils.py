@@ -14,3 +14,9 @@ def load_dataset():
         # y_train это массив с такими числами.
 
         return x_train, y_train
+
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+
+
