@@ -11,8 +11,8 @@ weights_hid_to_out = np.random.uniform(-0.5, 0.5, (10, 20))
 bias_inp_to_hid = np.zeros((20, 1))
 bias_hid_to_out = np.zeros((10, 1))
 
-epochs = 20
-error = 0
+epochs = 3
+loss = 0
 correct = 0
 learning_rate = 0.01
 alpha = 0.01
@@ -29,9 +29,10 @@ for epoch in range(epochs):
         hidden = np.where(hidden_raw > 0, hidden_raw, alpha * hidden_raw)
 
         output_raw = bias_hid_to_out + weights_hid_to_out @ hidden
-        output = utils.sigmoid(output_raw)
+        exp_vals = np.exp(output_raw - np.max(output_raw))
+        output = exp_vals / np.sum(exp_vals)
 
-        error += 1 / len(output) * np.sum((output - answer_label) ** 2, axis=0)
+        loss -= np.sum(answer_label * np.log(output + 1e-9))
         correct += int(np.argmax(output) == np.argmax(answer_label))
 
         #Backpropagation
@@ -40,14 +41,14 @@ for epoch in range(epochs):
         lrelu = np.where(hidden_raw > 0, 1.0, alpha)
         delta_hidden = delta_hidden_raw * lrelu
 
-        weights_inp_to_hid += - (learning_rate * delta_hidden @ np.transpose(image))
-        weights_hid_to_out += - (learning_rate * delta_output @ np.transpose(hidden))
-        bias_inp_to_hid += - (learning_rate * delta_hidden)
-        bias_hid_to_out += - (learning_rate * delta_output)
+        weights_inp_to_hid -= (learning_rate * delta_hidden @ np.transpose(image))
+        weights_hid_to_out -= (learning_rate * delta_output @ np.transpose(hidden))
+        bias_inp_to_hid -= (learning_rate * delta_hidden)
+        bias_hid_to_out -= (learning_rate * delta_output)
 
+    print(f"Loss: {loss / images.shape[0]:.6f}")
+    print(f"Correct: {round(correct / images.shape[0] * 100, 5)}%")
 
-    print(f"Loss: {round((error[0] / images.shape[0]) * 100, 5)}%")
-    print(f"Accuracy: {round((correct / images.shape[0]) * 100, 5)}%")
     correct, error = 0, 0
 
     print("")
@@ -87,9 +88,9 @@ plt.imshow(new_test_image.reshape(28, 28), cmap="Grays")
 plt.title(f"NN suggest the number is: {output.argmax()}")
 plt.show()
 
-#Для сохранения нужно запомнить только веса по факту. Нейросеть = архитектура + веса
-np.savez("20_epoch.npz",
-         w1=weights_inp_to_hid,
-         w2=weights_hid_to_out,
-         b1=bias_inp_to_hid,
-         b2=bias_hid_to_out)
+#Для сохранения нужно запомнить только веса по факт у. Нейросеть = архитектура + веса
+# np.savez("20_epoch.npz",
+#          w1=weights_inp_to_hid,
+#          w2=weights_hid_to_out,
+#          b1=bias_inp_to_hid,
+#          b2=bias_hid_to_out)
