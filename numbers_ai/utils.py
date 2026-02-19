@@ -1,4 +1,6 @@
 import numpy as np
+from matplotlib import pyplot as plt
+
 
 def load_dataset():
     with np.load("mnist.npz") as f:
@@ -20,3 +22,23 @@ def sigmoid(x):
     return 1/(1+np.exp(-x))
 
 
+def change_bias_inp(learning_rate, delta_hidden):
+    return learning_rate * delta_hidden
+
+def change_bias_hid(learning_rate, delta_output):
+    return learning_rate * delta_output
+
+def change_weights_inp_to_hid(learning_rate, delta_hidden, image):
+    return learning_rate * delta_hidden @ np.transpose(image)
+
+def change_weights_hid_to_inp(learning_rate, delta_output, hidden):
+    return learning_rate * delta_output @ np.transpose(hidden)
+
+
+def load_twenty_epochs():
+    with np.load("20_epoch.npz") as f:
+        weights_inp_to_hid = f["w1"]
+        weights_hid_to_out = f["w2"]
+        bias_inp_to_hid = f["b1"]
+        bias_hid_to_out = f["b2"]
+        return weights_inp_to_hid, weights_hid_to_out, bias_inp_to_hid, bias_hid_to_out
